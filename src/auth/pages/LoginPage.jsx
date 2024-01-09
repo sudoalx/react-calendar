@@ -92,7 +92,14 @@ export const LoginPage = () => {
           <h3>Sign up</h3>
           <form onSubmit={registerSubmit}>
             <div className="form-group mb-2">
-              <input type="text" className="form-control" placeholder="Name" />
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Name"
+                name="registerName"
+                value={registerName}
+                onChange={onRegisterInputChange}
+              />
             </div>
             <div className="form-group mb-2">
               <input
