@@ -108,7 +108,10 @@ export const CalendarModal = () => {
       <hr />
       <form className="container" onSubmit={onSubmit}>
         <div className="form-group mb-2 space-between w-100 d-flex">
-          <label htmlFor="startDate" style={{ marginBottom: "10px" }}>
+          <label
+            htmlFor="startDate"
+            style={{ marginBottom: "10px", marginRight: "10px" }}
+          >
             Start date and time
           </label>
           <DatePicker
@@ -124,7 +127,10 @@ export const CalendarModal = () => {
         </div>
 
         <div className="form-group mb-2 space-between w-100">
-          <label htmlFor="endDate" style={{ marginBottom: "10px" }}>
+          <label
+            htmlFor="endDate"
+            style={{ marginBottom: "10px", marginRight: "10px" }}
+          >
             End date and time
           </label>
           <DatePicker
