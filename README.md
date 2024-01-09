@@ -1,8 +1,36 @@
-# React + Vite
+# Calendar app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This is a simple calendar app that allows you to save events for each hour of the day. This app runs in the browser and uses React, Bootstrap, react-router-dom.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Backend API
+
+Source code for the backend API can be found [here](https://github.com/sudoalx/mern-calendar-backend)
+
+## Configuration
+
+Setup the environments variables as defined in the `.env.sample` file.
+
+## Installation
+
+```bash
+pnpm install
+```
+
+## Running the app
+
+```bash
+# development
+$ pnpm run dev
+
+# production mode
+$ pnpm start
+```
+
+## Test
+
+```bash
+# unit tests
+$ pnpm test
+```
