@@ -2,11 +2,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import { calendarApi } from '../api';
 import { clearErrorMessage, onChecking, onLogin, onLogout } from '../store';
 
-
 export const useAuthStore = () => {
-
     const { status, user, errorMessage } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+
+    const handleApiError = (error) => {
+        console.error('API Error:', error);
+
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Response Data:', error.response.data);
+            console.error('Status Code:', error.response.status);
+            console.error('Headers:', error.response.headers);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error('No Response Received. Request details:', error.request);
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error Setting Up the Request:', error.message);
+        }
+
+        dispatch(onLogout('An error occurred. Please try again.'));
+        setTimeout(() => {
+            dispatch(clearErrorMessage());
+        }, 10);
+    };
 
     const startLogin = async ({ email, password }) => {
         dispatch(onChecking());
@@ -15,14 +36,10 @@ export const useAuthStore = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.name, uid: data.uid }));
-
         } catch (error) {
-            dispatch(onLogout('Invalid credentials'));
-            setTimeout(() => {
-                dispatch(clearErrorMessage());
-            }, 10);
+            handleApiError(error);
         }
-    }
+    };
 
     const startRegister = async ({ email, password, name }) => {
         dispatch(onChecking());
@@ -31,15 +48,10 @@ export const useAuthStore = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.name, uid: data.uid }));
-
         } catch (error) {
-            dispatch(onLogout(error.response.data?.msg || '--'));
-            setTimeout(() => {
-                dispatch(clearErrorMessage());
-            }, 10);
+            handleApiError(error);
         }
-    }
-
+    };
 
     const checkAuthToken = async () => {
         const token = localStorage.getItem('token');
@@ -51,29 +63,22 @@ export const useAuthStore = () => {
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.name, uid: data.uid }));
         } catch (error) {
-            localStorage.clear();
-            dispatch(onLogout());
+            handleApiError(error);
         }
-    }
+    };
 
     const startLogout = () => {
         localStorage.clear();
         dispatch(onLogout());
-    }
-
-
+    };
 
     return {
-        //* Properties
         errorMessage,
         status,
         user,
-
-        //* Methods
         checkAuthToken,
         startLogin,
         startLogout,
         startRegister,
-    }
-
-}
+    };
+};
