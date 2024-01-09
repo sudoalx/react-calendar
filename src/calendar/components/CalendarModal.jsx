@@ -77,7 +77,11 @@ export const CalendarModal = () => {
     const difference = differenceInSeconds(formValues.end, formValues.start);
 
     if (isNaN(difference) || difference <= 0) {
-      Swal.fire("Invalid date", "End date must be after start date", "error");
+      Swal.fire(
+        "Invalid date",
+        "End date must be a date after start date",
+        "error"
+      );
       return;
     }
 
@@ -103,9 +107,12 @@ export const CalendarModal = () => {
       <h1> New event </h1>
       <hr />
       <form className="container" onSubmit={onSubmit}>
-        <div className="form-group mb-2">
-          <label>Date and time start</label>
+        <div className="form-group mb-2 space-between w-100 d-flex">
+          <label htmlFor="startDate" style={{ marginBottom: "10px" }}>
+            Start date and time
+          </label>
           <DatePicker
+            id="startDate"
             selected={formValues.start}
             onChange={(event) => onDateChanged(event, "start")}
             className="form-control"
@@ -116,8 +123,10 @@ export const CalendarModal = () => {
           />
         </div>
 
-        <div className="form-group mb-2">
-          <label>Date and time end</label>
+        <div className="form-group mb-2 space-between w-100">
+          <label htmlFor="endDate" style={{ marginBottom: "10px" }}>
+            End date and time
+          </label>
           <DatePicker
             minDate={formValues.start}
             selected={formValues.end}
@@ -127,12 +136,13 @@ export const CalendarModal = () => {
             showTimeSelect
             locale="en"
             timeCaption="Hour"
+            id="endDate"
           />
         </div>
 
         <hr />
         <div className="form-group mb-2">
-          <label>Event title and notes</label>
+          <label htmlFor="eventTitle">Event title and notes</label>
           <input
             type="text"
             className={`form-control ${titleClass}`}
@@ -141,6 +151,7 @@ export const CalendarModal = () => {
             autoComplete="off"
             value={formValues.title}
             onChange={onInputChanged}
+            id="eventTitle"
           />
           <small id="emailHelp" className="form-text text-muted">
             A short description
@@ -162,10 +173,12 @@ export const CalendarModal = () => {
           </small>
         </div>
 
-        <button type="submit" className="btn btn-outline-primary btn-block">
-          <i className="far fa-save"></i>
-          <span>Save</span>
-        </button>
+        <div className="form-group mb-2 d-flex justify-content-end">
+          <button type="submit" className="btn btn-outline-primary btn-block">
+            <i className="far fa-save"></i>
+            <span style={{ marginLeft: "5px" }}>Save</span>
+          </button>
+        </div>
       </form>
     </Modal>
   );
