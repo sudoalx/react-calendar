@@ -9,6 +9,7 @@ export const useCalendarStore = () => {
 
     const dispatch = useDispatch();
     const { events, activeEvent } = useSelector(state => state.calendar);
+    const { user } = useSelector(state => state.auth);
 
     const setActiveEvent = (calendarEvent) => {
         dispatch(onSetActiveEvent(calendarEvent))
@@ -25,11 +26,13 @@ export const useCalendarStore = () => {
 
             // Creating
             const { data } = await calendarApi.post('/events', calendarEvent);
-            dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }));
+            dispatch(onAddNewEvent({ ...calendarEvent, id: data.event.id, user }));
 
         } catch (error) {
             console.log(error);
-            Swal.fire('Error saving event', error.response.data.msg, 'error');
+            // Check if error.response is defined before accessing its properties
+            const errorMessage = error.response?.data?.msg || 'An error occurred while saving the event';
+            Swal.fire('Error saving event', errorMessage, 'error');
         }
     }
 
@@ -48,8 +51,6 @@ export const useCalendarStore = () => {
             const { data } = await calendarApi.get('/events');
             const events = convertEventsToDateEvents(data.events);
             dispatch(onLoadEvents(events));
-
-
         } catch (error) {
             console.log('Error loading events')
             console.log(error)
@@ -65,6 +66,7 @@ export const useCalendarStore = () => {
         hasEventSelected: !!activeEvent,
 
         //* Methods
+        startLoadingEvents,
         startDeletingEvent,
         setActiveEvent,
         startSavingEvent,
