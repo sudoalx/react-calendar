@@ -9,21 +9,23 @@ export const useAuthStore = () => {
     const handleApiError = (error) => {
         console.error('API Error:', error);
 
+        let errorMessageToShow = 'An error occurred. Please try again.';
+
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
             console.error('Response Data:', error.response.data);
             console.error('Status Code:', error.response.status);
             console.error('Headers:', error.response.headers);
+
+            if (error.response.data && error.response.data.msg) {
+                errorMessageToShow = error.response.data.msg;
+            }
         } else if (error.request) {
-            // The request was made but no response was received
             console.error('No Response Received. Request details:', error.request);
         } else {
-            // Something happened in setting up the request that triggered an Error
             console.error('Error Setting Up the Request:', error.message);
         }
 
-        dispatch(onLogout('An error occurred. Please try again.'));
+        dispatch(onLogout(errorMessageToShow));
         setTimeout(() => {
             dispatch(clearErrorMessage());
         }, 10);
