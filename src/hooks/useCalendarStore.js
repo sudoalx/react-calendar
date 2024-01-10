@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from '../store';
+import Swal from 'sweetalert2';
+import { calendarApi } from '../api';
+import { convertEventsToDateEvents } from '../helpers';
+import { onAddNewEvent, onDeleteEvent, onLoadEvents, onSetActiveEvent, onUpdateEvent } from '../store';
 
 
 export const useCalendarStore = () => {
@@ -12,24 +15,47 @@ export const useCalendarStore = () => {
     }
 
     const startSavingEvent = async (calendarEvent) => {
-        // TODO: send to backend
+        try {
+            if (calendarEvent.id) {
+                // Updating
+                await calendarApi.put(`/events/${calendarEvent.id}`, calendarEvent);
+                dispatch(onUpdateEvent({ ...calendarEvent, user }));
+                return;
+            }
 
+            // Creating
+            const { data } = await calendarApi.post('/events', calendarEvent);
+            dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id, user }));
 
-        if (calendarEvent._id) {
-            // Update
-            dispatch(onUpdateEvent({ ...calendarEvent }));
-        } else {
-            // Create
-            dispatch(onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() }));
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error saving event', error.response.data.msg, 'error');
         }
     }
 
-    const startDeletingEvent = () => {
-        // Todo: send to backend
-
-
-        dispatch(onDeleteEvent());
+    const startDeletingEvent = async () => {
+        try {
+            await calendarApi.delete(`/events/${activeEvent.id}`);
+            dispatch(onDeleteEvent());
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error deleting event', error.response.data.msg, 'error');
+        }
     }
+
+    const startLoadingEvents = async () => {
+        try {
+            const { data } = await calendarApi.get('/events');
+            const events = convertEventsToDateEvents(data.events);
+            dispatch(onLoadEvents(events));
+
+
+        } catch (error) {
+            console.log('Error loading events')
+            console.log(error)
+        }
+    }
+
 
 
     return {
