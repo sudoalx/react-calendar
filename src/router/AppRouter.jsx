@@ -12,7 +12,12 @@ export const AppRouter = () => {
   }, []);
 
   if (status === "checking") {
-    return <h3>Cargando...</h3>;
+    // return full screen spinner
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <output className="spinner-border text-primary" />
+      </div>
+    );
   }
 
   return (
